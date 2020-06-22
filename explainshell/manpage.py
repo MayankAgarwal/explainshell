@@ -180,7 +180,7 @@ class manpage(object):
     def read(self):
         '''Read the content from a local manpage file and store it in usable formats
         on the class instance.'''
-        cmd = [config.MAN2HTML, urllib.urlencode({'local' : os.path.abspath(self.path)})]
+        cmd = [config.MAN2HTML, urllib.parse.urlencode({'local' : os.path.abspath(self.path)})]
         logger.info('executing %r', ' '.join(cmd))
         self._text = subprocess.check_output(cmd, stderr=devnull, env=ENV)
         try:

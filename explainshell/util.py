@@ -43,7 +43,7 @@ def groupcontinuous(l, key=None):
     '''
     if key is None:
         key = lambda x: x
-    for k, g in itertools.groupby(enumerate(l), lambda (i, x): i-key(x)):
+    for k, g in itertools.groupby(enumerate(l), lambda i, x: i-key(x)):
         yield map(itemgetter(1), g)
 
 def toposorted(graph, parents):

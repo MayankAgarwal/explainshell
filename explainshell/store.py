@@ -21,11 +21,12 @@ class paragraph(object):
     '''a paragraph inside a man page is text that ends with two new lines'''
     def __init__(self, idx, text, section, is_option):
         self.idx = idx
-        self.text = text
-        self.section = section
+        self.text = str(text)
+        self.section = str(section)
         self.is_option = is_option
 
     def cleantext(self):
+        print(self.text)
         t = re.sub(r'<[^>]+>', '', self.text)
         t = re.sub('&lt;', '<', t)
         t = re.sub('&gt;', '>', t)
@@ -289,7 +290,7 @@ class store(object):
         logger.info('got %s', results)
         if section is not None:
             if len(results) > 1:
-                results.sort(key=lambda (oid, m): m.section == section, reverse=True)
+                results.sort(key=lambda oid, m: m.section == section, reverse=True)
                 logger.info(r'sorting %r so %s is first', results, section)
             if not results[0][1].section == section:
                 raise errors.ProgramDoesNotExist(origname)
