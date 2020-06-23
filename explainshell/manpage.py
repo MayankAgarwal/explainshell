@@ -120,6 +120,7 @@ def _parsetext(lines):
     section = None
     i = 0
     for l in lines:
+        l = str(l)
         l = re.sub(_href, r'<a href="http://manpages.ubuntu.com/manpages/precise/en/man\2/\1.\2.html">', l)
         for lookfor, replacewith in _replacements:
             l = re.sub(lookfor, replacewith, l)
