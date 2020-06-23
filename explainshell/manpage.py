@@ -120,11 +120,12 @@ def _parsetext(lines):
     section = None
     i = 0
     for l in lines:
-        l = re.sub(_href, r'<a href="http://manpages.ubuntu.com/manpages/precise/en/man\2/\1.\2.html">', l.decode('utf-8'))
+        l = re.sub(_href, r'<a href="http://manpages.ubuntu.com/manpages/precise/en/man\2/\1.\2.html">', l)
         for lookfor, replacewith in _replacements:
             l = re.sub(lookfor, replacewith, l)
         # confirm the line is valid utf8
-        lreplaced = l #.encode('utf-8') #lreplaced = l.decode('utf8', 'ignore').encode('utf8')
+        #lreplaced = l #.encode('utf-8') #
+        lreplaced = l.decode('utf-8', 'ignore').encode('utf-8')
         if lreplaced != l:
             logger.error('line %r contains invalid utf8', l)
             l = lreplaced

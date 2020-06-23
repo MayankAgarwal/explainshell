@@ -115,8 +115,9 @@ class manager(object):
                     added.append(m)
             except errors.EmptyManpage as e:
                 logger.error('manpage %r is empty!', e.args[0])
-            except ValueError:
+            except ValueError as err:
                 logger.fatal('uncaught exception when handling manpage %s', path)
+                logger.fatal('Exception: %s', str(err))
             except KeyboardInterrupt:
                 raise
             except:
