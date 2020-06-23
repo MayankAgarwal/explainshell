@@ -153,7 +153,7 @@ class manager(object):
             self.store.addmapping(src, dst, 1)
             logger.info('inserting mapping (multicommand) %s -> %s', src, dst)
 
-        for multicommand, _id in multicommands.iteritems():
+        for multicommand, _id in list(multicommands.items()):
             self.store.setmulticommand(_id)
             logger.info('making %r a multicommand', multicommand)
 

@@ -26,7 +26,6 @@ class paragraph(object):
         self.is_option = is_option
 
     def cleantext(self):
-        print(self.text)
         t = re.sub(r'<[^>]+>', '', self.text)
         t = re.sub('&lt;', '<', t)
         t = re.sub('&gt;', '>', t)
@@ -160,7 +159,7 @@ class manpage(object):
                 groups.setdefault(opt.argument, []).append(opt)
 
         # merge all the paragraphs under the same argument to a single string
-        for k, l in groups.iteritems():
+        for k, l in groups.items():
             groups[k] = '\n\n'.join([p.text for p in l])
 
         return groups
