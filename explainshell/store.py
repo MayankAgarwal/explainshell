@@ -357,7 +357,7 @@ class store(object):
         logger.info('updating manpage %s', m.source)
         m.updated = True
         self.manpage.update({'source' : m.source}, m.to_store())
-        _id = self.manpage.find_one({'source' : m.source}, fields={'_id':1})['_id']
+        _id = self.manpage.find_one({'source' : m.source}, projection={'_id':1})['_id']
         for alias, score in m.aliases:
             if alias not in self:
                 self.addmapping(alias, _id, score)
@@ -370,7 +370,7 @@ class store(object):
         # check that everything in manpage is reachable
         mappings = list(self.mapping.find())
         reachable = set([m['dst'] for m in mappings])
-        manpages = set([m['_id'] for m in self.manpage.find(fields={'_id':1})])
+        manpages = set([m['_id'] for m in self.manpage.find(projection={'_id':1})])
 
         ok = True
         unreachable = manpages - reachable
@@ -387,12 +387,12 @@ class store(object):
         return ok, unreachable, notfound
 
     def names(self):
-        cursor = self.manpage.find(fields={'name':1})
+        cursor = self.manpage.find(projection={'name':1})
         for d in cursor:
             yield d['_id'], d['name']
 
     def mappings(self):
-        cursor = self.mapping.find(fields={'src':1})
+        cursor = self.mapping.find(projection={'src':1})
         for d in cursor:
             yield d['src'], d['_id']
 

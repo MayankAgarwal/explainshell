@@ -154,8 +154,9 @@ def _parsesynopsis(base, synopsis):
     ('p-r+o++g', 'foo bar')
     '''
     synopsis = synopsis[len(base)+3:-1]
+    synopsis = str(synopsis)
     if synopsis[-1] == '.':
-        synopsis = synopsis[:-1]
+        synopsis = str(synopsis[:-1])
     return SPLITSYNOP.match(synopsis).groups()
 
 class manpage(object):
@@ -199,7 +200,7 @@ class manpage(object):
             d = collections.OrderedDict()
             for prog, text in self.synopsis:
                 d.setdefault(text, []).append(prog)
-            text, progs = d.items()[0]
+            text, progs = list(d.items())[0]
             self.synopsis = text
             self.aliases.update(progs)
         self.aliases.remove(self.name)
