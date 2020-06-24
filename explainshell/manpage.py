@@ -120,16 +120,17 @@ def _parsetext(lines):
     section = None
     i = 0
     for l in lines:
-        l = l.decode('utf-8', 'replace')
         l = re.sub(_href, r'<a href="http://manpages.ubuntu.com/manpages/precise/en/man\2/\1.\2.html">', l)
         for lookfor, replacewith in _replacements:
             l = re.sub(lookfor, replacewith, l)
-        # confirm the line is valid utf8
-        lreplaced = l #.encode('utf-8') #lreplaced = l.decode('utf-8', 'ignore').encode('utf-8')
-        if lreplaced != l:
-            logger.error('line %r contains invalid utf8', l)
-            l = lreplaced
-            raise ValueError
+
+        # # confirm the line is valid utf8
+        # lreplaced = l #.encode('utf-8') #lreplaced = l.decode('utf-8', 'ignore').encode('utf-8')
+        # if lreplaced != l:
+        #     logger.error('line %r contains invalid utf8', l)
+        #     l = lreplaced
+        #     raise ValueError
+
         if l.startswith('<b>'): # section
             section = re.sub(_section, r'\1', l)
         else:
@@ -155,9 +156,8 @@ def _parsesynopsis(base, synopsis):
     ('p-r+o++g', 'foo bar')
     '''
     synopsis = synopsis[len(base)+3:-1]
-    synopsis = str(synopsis)
     if synopsis[-1] == '.':
-        synopsis = str(synopsis[:-1])
+        synopsis = synopsis[:-1]
     return SPLITSYNOP.match(synopsis).groups()
 
 class manpage(object):
@@ -182,11 +182,19 @@ class manpage(object):
     def read(self):
         '''Read the content from a local manpage file and store it in usable formats
         on the class instance.'''
-        cmd = [config.MAN2HTML, urllib.parse.urlencode({'local' : os.path.abspath(self.path)})]
+        cmd = [config.MAN2HTML, urllib.parse.urlencode({'local': os.path.abspath(self.path)})]
         logger.info('executing %r', ' '.join(cmd))
-        self._text = subprocess.check_output(cmd, stderr=devnull, env=ENV)
+        self._text = subprocess.check_output(cmd, stderr=devnull, env=ENV)      # returns as bytes
+
+        self._text = self._text.decode('utf-8', 'replace')
+        self._text = self._text.replace(u'\ufffd', ' <INVALID> ')
+
         try:
             self.synopsis = subprocess.check_output(['lexgrog', self.path], stderr=devnull).rstrip()
+
+            self.synopsis = self.synopsis.decode('utf-8', 'replace')
+            self.synopsis = self.synopsis.replace(u'\ufffd', ' <INVALID> ')
+
         except subprocess.CalledProcessError:
             logger.error('failed to extract synopsis for %s', self.name)
 
@@ -208,3 +216,13 @@ class manpage(object):
 
         # give the name of the man page the highest score
         self.aliases = [(self.name, 10)] + [(x, 1) for x in self.aliases]
+
+
+if __name__ == "__main__":
+    with open('/Users/mayank.agarwal@ibm.com/Documents/projects/bashparser/explainshell/manpage.txt', 'rb') as f:
+        man = f.read()
+        man = man.decode('utf-8', 'replace')
+        man = man.replace(u'\ufffd', ' <INVALID> ')
+    lines = man.splitlines()[7:-3]
+    x = list(_parsetext(lines))
+    print('done')

@@ -21,8 +21,8 @@ class paragraph(object):
     '''a paragraph inside a man page is text that ends with two new lines'''
     def __init__(self, idx, text, section, is_option):
         self.idx = idx
-        self.text = str(text)
-        self.section = str(section)
+        self.text = text
+        self.section = section
         self.is_option = is_option
 
     def cleantext(self):
