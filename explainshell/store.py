@@ -21,9 +21,15 @@ class paragraph(object):
     '''a paragraph inside a man page is text that ends with two new lines'''
     def __init__(self, idx, text, section, is_option):
         self.idx = idx
-        self.text = text
-        self.section = section
+        self.text = self.__convert_bytes_to_utf__(text)
+        self.section = self.__convert_bytes_to_utf__(section)
         self.is_option = is_option
+
+    def __convert_bytes_to_utf__(self, text):
+        if type(text) is bytes:
+            text = text.decode('utf-8', 'replace')
+            text = text.replace(u'\ufffd', ' <INVALID> ')
+        return text
 
     def cleantext(self):
         t = re.sub(r'<[^>]+>', '', self.text)
